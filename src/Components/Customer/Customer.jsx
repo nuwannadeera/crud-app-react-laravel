@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
 import Loader from '../Loader';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Customer() {
 
@@ -13,6 +14,8 @@ function Customer() {
         email: '',
         contact: ''
     });
+
+    const navigate = useNavigate();
 
     const getAllCustomers = async () => {
         const response = await fetch('http://127.0.0.1:8000/students');
@@ -38,9 +41,9 @@ function Customer() {
         }
         axios.post(`http://127.0.0.1:8000/saveStudent`, data).then(
             resp => {
-                if (resp.status !== 200) {
-                    setLoader(false);
+                if (resp.status === 200) {
                     getAllCustomers();
+                    setLoader(false);
                     alert(resp.data);
                 } else {
                     setLoader(false);
@@ -50,7 +53,7 @@ function Customer() {
     }
 
     const editCustomer = async (id) => {
-        alert(id);
+        navigate(`/edit/${id}`);
     }
 
     const deleteCustomer = async (id) => {
@@ -59,7 +62,7 @@ function Customer() {
 
     useEffect(() => {
         getAllCustomers();
-    }, [customers])
+    }, [])
 
     return (
         <>
