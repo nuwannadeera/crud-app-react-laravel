@@ -38,6 +38,28 @@ function EditCustomer() {
       });
   }
 
+  const updateCustomer = async (e) => {
+    setLoader(true);
+    e.preventDefault();
+    const data = {
+      name: customer.name,
+      email: customer.email,
+      contact: customer.contact
+    }
+    axios.patch(`http://127.0.0.1:8000/updateStudentData/${id}`, data).then(
+      resp => {
+        if (resp.status === 200) {
+          setCustomer(resp.data);
+          setLoader(false);
+          editStudent();
+          alert('updated successfully');
+        } else {
+          setLoader(false);
+          alert('update error');
+        }
+      });
+  }
+
   useEffect(() => {
     editStudent();
   }, [])
@@ -45,32 +67,36 @@ function EditCustomer() {
   return (
     <>
       {
-        loader ? (
-          <Loader />
-        ) :
-          (<div className="container">
-            <form>
-              <div className="form-group">
-                <div className="mb-3 mt-3">
-                  <label>Name :</label>
-                  <input type="text" className="form-control" name="name" onChange={changeInput}
-                    value={customer.name} placeholder="Enter Name" required="required" />
+        (Object.keys(customer).length === 0) ?
+          (<div className='container'>
+            No such a id found...!
+          </div>) :
+          (loader ? (
+            <Loader />
+          ) :
+            (<div className="container">
+              <form onSubmit={updateCustomer}>
+                <div className="form-group">
+                  <div className="mb-3 mt-3">
+                    <label>Name :</label>
+                    <input type="text" className="form-control" name="name" onChange={changeInput}
+                      value={customer.name} placeholder="Enter Name" required="required" />
+                  </div>
+                  <div className="mb-3 mt-3">
+                    <label>E-mail :</label>
+                    <input type="email" className="form-control" name="email" onChange={changeInput}
+                      value={customer.email} placeholder="Enter Email" required="required" />
+                  </div>
+                  <div className="mb-3 mt-3">
+                    <label>Contact :</label>
+                    <input type="text" className="form-control" name="contact" onChange={changeInput}
+                      value={customer.contact} placeholder="Enter Contact" required="required" />
+                  </div>
                 </div>
-                <div className="mb-3 mt-3">
-                  <label>E-mail :</label>
-                  <input type="email" className="form-control" name="email" onChange={changeInput}
-                    value={customer.email} placeholder="Enter Email" required="required" />
-                </div>
-                <div className="mb-3 mt-3">
-                  <label>Contact :</label>
-                  <input type="text" className="form-control" name="contact" onChange={changeInput}
-                    value={customer.contact} placeholder="Enter Contact" required="required" />
-                </div>
-              </div>
-              <button className="btn btn-success">Update</button>
-              <button className="btn btn-primary" onClick={() => goBack()}>Back</button>
-            </form>
-          </div>)
+                <button className="btn btn-success" type='submit'>Update</button>
+                <button className="btn btn-primary" onClick={() => goBack}>Back</button>
+              </form>
+            </div>))
       }
     </>
   )

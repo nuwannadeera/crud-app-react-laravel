@@ -56,8 +56,22 @@ function Customer() {
         navigate(`/edit/${id}`);
     }
 
-    const deleteCustomer = async (id) => {
-        alert(id);
+    const deleteCustomer = async (e, id) => {
+        e.preventDefault();
+        const clicked = e.currentTarget;
+        clicked.innerText = "Deleting...";
+
+        axios.delete(`http://127.0.0.1:8000/deleteStudent/${id}`).then(
+            resp => {
+                if (resp.status === 200) {
+                    getAllCustomers();
+                    setLoader(false);
+                    alert('deleted succssfully');
+                } else {
+                    setLoader(false);
+                    alert('update error');
+                }
+            });
     }
 
     useEffect(() => {
@@ -111,7 +125,7 @@ function Customer() {
                                             <td>{customer.contact}</td>
                                             <td>
                                                 <button className="btn btn-success mx-2" onClick={() => editCustomer(customer.id)}>Edit</button>
-                                                <button className="btn btn-danger" onClick={() => deleteCustomer(customer.id)}>Delete</button>
+                                                <button className="btn btn-danger" onClick={(e) => deleteCustomer(e, customer.id)}>Delete</button>
                                             </td>
                                         </tr>
                                     ))
